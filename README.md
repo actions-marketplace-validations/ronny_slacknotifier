@@ -13,12 +13,12 @@ Example:
 ```yaml
 uses: ronny/slacknotifier@v1
 with:
-  slack-token: xoxb-whatever
+  slack-token: ${{ secrets.SLACK_TOKEN }}
   bot-name: deploybot
   bot-icon-emoji: ":mega:"
   channel-id: "C12345"
   message: "Deployed `todo-service`"
-  message-context: "Env: `production` | By: $GITHUB_ACTOR | Commit: $GITHUB_SHA"
+  message-context: "Env: `production` | By: `${{ github.actor }}` | Commit: `${{ github.sha }}`"
 ```
 
 ## CLI tool
