@@ -58,6 +58,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - id: start-timestamp
+        run: |
+          echo "::set-output name=timestamp::$(date)"
+
       - name: Notify Slack (start)
         uses: ronny/slacknotifier@main
         id: notify-start
@@ -67,7 +71,7 @@ jobs:
           bot-icon-emoji: ":mega:"
           channel-id: ${{ secrets.CHANNEL_ID }}
           message: "Building docker images for `${{ github.repository }}`... :thinking_face:"
-          message-context: "Commit: `${{ github.sha }}` | By: `${{ github.actor }}` | Run: `${{ github.run_id }}`/`${{ github.run_number }}`"
+          message-context: "Commit: `${{ github.sha }}` | Start: ${{ steps.start-timestamp.outputs.timestamp }}"
 
       - name: Docker metadata
         id: meta
@@ -104,6 +108,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - id: finish-timestamp
+        run: |
+          echo "::set-output name=timestamp::$(date)"
+
       - name: Notify Slack (finish)
         uses: ronny/slacknotifier@main
         with:
@@ -113,4 +121,4 @@ jobs:
           replace-timestamp: ${{ steps.notify-start.outputs.timestamp }}
           channel-id: ${{ secrets.CHANNEL_ID }}
           message: "Finished building docker images for `${{ github.repository }}` :tada:"
-          message-context: "Commit: `${{ github.sha }}` | By: `${{ github.actor }}` | Run: `${{ github.run_id }}`/`${{ github.run_number }}`"
+          message-context: "Commit: `${{ github.sha }}` | Start: ${{ steps.start-timestamp.outputs.timestamp }} | Finish: ${{ steps.finish-timestamp.outputs.timestamp }}"
