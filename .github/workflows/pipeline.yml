@@ -51,9 +51,9 @@ jobs:
       - name: Build binaries
         run: make binaries
 
-  build:
+  docker-build-push:
     runs-on: ubuntu-latest
-    if: ${{ github.event.ref == 'ref/heads/main' }}
+    if: ${{ github.ref == 'ref/heads/main' }}
     needs: [tests]
     steps:
       - name: Checkout repository
