@@ -1,5 +1,6 @@
+# https://help.github.com/en/articles/metadata-syntax-for-github-actions
 ---
-name: Slack Notifier
+name: slacknotifier
 description: Sends a notification to Slack
 author: "@ronny"
 branding:
