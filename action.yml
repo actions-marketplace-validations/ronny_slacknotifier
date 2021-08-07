@@ -1,0 +1,53 @@
+---
+name: Slack Notifier
+description: Sends a notification to Slack
+author: "@ronny"
+branding:
+  # 🙄 'slack' is in https://feathericons.com/
+  # but not in https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#brandingicon
+  icon: command
+  color: green
+inputs:
+  slack-token:
+    description: Slack bot token, usually starts with xoxb-
+    required: true
+  bot-name:
+    description: the bot name
+    required: true
+    default: 'slacknotifier'
+  bot-icon-emoji:
+    description: emoji to use as the bot’s icon
+    required: true
+    default: ':ghost:'
+  channel-id:
+    description: the ID of the channel to send the notification to
+    required: true
+  message:
+    description: the notification message
+    required: true
+  message-context:
+    description: extra context information to be included with the notification message, usually displayed below the message
+    required: true
+    default: ''
+  markdown:
+    description: whether the message and message-context are in Slack’s Markdown format or not ("true" or "false" as string)
+    required: true
+    default: 'true'
+  replace-timestamp:
+    description: the timestamp of a previously-sent message (e.g. from a previous step) to replace with this message
+    required: true
+    default: ''
+  timeout:
+    description: "how long to wait before giving up when sending notification to Slack (format: Go time.Duration)"
+    required: true
+    default: "30s"
+outputs:
+  channel-id:
+    description: the canonical channel ID where the message was sent
+  timestamp:
+    description: timestamp of the sent message, useful for replacing this message at a later step
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - /bin/action-slack-notify
