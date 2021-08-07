@@ -58,21 +58,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - id: start-timestamp
-        run: |
-          echo "::set-output name=timestamp::$(date)"
-
-      - name: Notify Slack (start)
-        uses: ronny/slacknotifier@main
-        id: notify-start
-        with:
-          slack-token: ${{ secrets.SLACK_TOKEN }}
-          bot-name: deploybot
-          bot-icon-emoji: ":mega:"
-          channel-id: ${{ secrets.CHANNEL_ID }}
-          message: "Building docker images for `${{ github.repository }}`... :thinking_face:"
-          message-context: "Commit: `${{ github.sha }}` | Start: ${{ steps.start-timestamp.outputs.timestamp }}"
-
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v3
@@ -85,6 +70,24 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
+
+      - id: start-timestamp
+        run: |
+          echo "::set-output name=timestamp::$(date)"
+
+      - name: Notify Slack (start)
+        uses: ronny/slacknotifier@main
+        id: notify-start
+        with:
+          slack-token: ${{ secrets.SLACK_TOKEN }}
+          bot-name: slacknotifier
+          bot-icon-emoji: ":mega:"
+          channel-id: ${{ secrets.CHANNEL_ID }}
+          message: "Building docker images for `${{ github.repository }}`... :thinking_face:"
+          message-context: |
+            *Commit*: `${{ github.sha }}`
+            *Tags*: ${{ join(steps.meta.outputs.tags) }}
+            *Start*: ${{ steps.start-timestamp.outputs.timestamp }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -116,9 +119,13 @@ jobs:
         uses: ronny/slacknotifier@main
         with:
           slack-token: ${{ secrets.SLACK_TOKEN }}
-          bot-name: deploybot
+          bot-name: slacknotifier
           bot-icon-emoji: ":mega:"
           replace-timestamp: ${{ steps.notify-start.outputs.timestamp }}
           channel-id: ${{ secrets.CHANNEL_ID }}
           message: "Finished building docker images for `${{ github.repository }}` :tada:"
-          message-context: "Commit: `${{ github.sha }}` | Start: ${{ steps.start-timestamp.outputs.timestamp }} | Finish: ${{ steps.finish-timestamp.outputs.timestamp }}"
+          message-context: |
+            *Commit*: `${{ github.sha }}`
+            *Tags*: ${{ join(steps.meta.outputs.tags) }}
+            *Start*: ${{ steps.start-timestamp.outputs.timestamp }}
+            *Finish*: ${{ steps.finish-timestamp.outputs.timestamp }}"
