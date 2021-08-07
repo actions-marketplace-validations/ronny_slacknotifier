@@ -11,7 +11,10 @@ See [action.yml] for details on inputs and outputs.
 Example:
 
 ```yaml
-uses: ronny/slacknotifier@v1
+# `uses: ronny/slacknotifier@v1` should work too but it will build the docker
+# image from scratch every time, which will take about a minute or so, that's
+# probably not what you want 🙂
+uses: docker://ronny/slacknotifier:1
 with:
   slack-token: ${{ secrets.SLACK_TOKEN }}
   bot-name: deploybot

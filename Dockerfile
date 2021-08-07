@@ -33,4 +33,4 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=builder /src/bin/ /bin/
 
-CMD ["/bin/slack-notify"]
+CMD ["/bin/action-slack-notify"]
