@@ -49,4 +49,4 @@ outputs:
     description: timestamp of the sent message, useful for replacing this message at a later step
 runs:
   using: docker
-  image: Dockerfile.action
+  image: action/Dockerfile
