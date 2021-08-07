@@ -15,22 +15,18 @@ RUN go mod download
 
 COPY . .
 
-RUN make binaries
+RUN make binaries && \
+    strip bin/* && \
+    upx -q -9 bin/*
 
-# Strip any symbols - this is not a library
-RUN strip bin/*
-
-# Compress the compiled action
-RUN upx -q -9 bin/*
+RUN echo "nobody:x:65534:65534:Nobody:/:" > /etc_passwd
 
 #############################################################################
 FROM scratch
 
-# Copy over SSL certificates from the first step - this is required
-# if our code makes any outbound SSL connections because it contains
-# the root CA bundle.
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc_passwd /etc/passwd
+COPY --from=builder --chown=65534:0 /src/bin/ /bin/
 
-COPY --from=builder /src/bin/ /bin/
-
-CMD ["/bin/action-slack-notify"]
+USER nobody
+CMD ["/bin/slack-notify"]
