@@ -86,6 +86,7 @@ jobs:
           message: "Building docker images for `${{ github.repository }}`... :thinking_face:"
           message-context: |
             *Commit*: `${{ github.sha }}`
+            *Action*: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
             *Tags*: ${{ join(steps.meta.outputs.tags) }}
             *Start*: ${{ steps.start-timestamp.outputs.timestamp }}
 
@@ -126,6 +127,7 @@ jobs:
           message: "Finished building docker images for `${{ github.repository }}` :tada:"
           message-context: |
             *Commit*: `${{ github.sha }}`
+            *Action*: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
             *Tags*: ${{ join(steps.meta.outputs.tags) }}
             *Start*: ${{ steps.start-timestamp.outputs.timestamp }}
             *Finish*: ${{ steps.finish-timestamp.outputs.timestamp }}"
