@@ -29,19 +29,23 @@ inputs:
   message-context:
     description: extra context information to be included with the notification message, usually displayed below the message
     required: true
-    default: ''
+    default: ""
   markdown:
     description: whether the message and message-context are in Slack’s Markdown format or not ("true" or "false" as string)
     required: true
-    default: 'true'
+    default: "true"
   replace-timestamp:
     description: the timestamp of a previously-sent message (e.g. from a previous step) to replace with this message
     required: true
-    default: ''
+    default: ""
   timeout:
     description: "how long to wait before giving up when sending notification to Slack (format: Go time.Duration)"
     required: true
     default: "30s"
+  ignore-failure:
+    description: "when true, the action will return success anyway upon failure to notify Slack"
+    required: false
+    default: "false"
 outputs:
   channel-id:
     description: the canonical channel ID where the message was sent

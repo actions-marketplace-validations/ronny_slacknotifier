@@ -49,6 +49,9 @@ func main() {
 		githubactions.Fatalf("timeout: time.ParseDuration: %s\n", err)
 	}
 
+	ignoreFailureString := githubactions.GetInput("ignore-failure")
+	ignoreFailure := ignoreFailureString == "true"
+
 	notifier := &slacknotifier.Notifier{
 		BotUsername:  botUsername,
 		BotIconEmoji: botIconEmoji,
@@ -66,7 +69,11 @@ func main() {
 		TimestampOfMessageToReplace: replaceMsgTimestamp,
 	})
 	if err != nil {
-		githubactions.Fatalf("notifer.Notify: %s\n", err)
+		if ignoreFailure {
+			githubactions.Warningf("notifer.Notify: ignored error: %s\n", err)
+		} else {
+			githubactions.Fatalf("notifer.Notify: fatal: %s\n", err)
+		}
 	}
 
 	githubactions.SetOutput("channel-id", output.ChannelID)
